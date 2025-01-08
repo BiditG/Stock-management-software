@@ -29,7 +29,7 @@ def load_stock_data_from_google_sheet(creds_path, sheet_name):
     return stock_items
 
 def main():
-    creds_path = r"C:\Users\User\Desktop\POP\car_parts_shop\ornate-genre-446307-f2-4c61d25f2546.json"
+    creds_path = r"C:\Users\User\Desktop\POP\car_parts_shop\ornate-genre-446307-f2-bf20595329dc.json"
     sheet_name = "stock_data"
 
     stock_items = load_stock_data_from_google_sheet(creds_path, sheet_name)

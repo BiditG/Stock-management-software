@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="chat-box" id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message here..." autofocus>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === "") return;
+
+            addMessage("You", userInput, "user-message");
+            showLoader();
+
+            fetch('/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_input: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoader();
+                simulateTyping(data.response, "bot-message");
+                document.getElementById('user-input').value = '';
+            });
+        }
+
+        function addMessage(sender, text, className) {
+            const chatBox = document.getElementById('chat-box');
+            const message = document.createElement('div');
+            message.className = `message ${className}`;
+            message.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showLoader() {
+            const chatBox = document.getElementById('chat-box');
+            const loader = document.createElement('div');
+            loader.id = 'loader';
+            loader.className = 'message bot-message';
+            loader.innerHTML = `<strong>Bot:</strong> <span class="loader"></span>`;
+            chatBox.appendChild(loader);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.remove();
+            }
+        }
+
+        function simulateTyping(text, className) {
+            const chatBox = document.getElementById('chat-box');
+            const message = document.createElement('div');
+            message.className = `message ${className}`;
+            message.innerHTML = `<strong>Bot:</strong> <span class="typing-text"></span>`;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const typingText = message.querySelector('.typing-text');
+            let index = 0;
+
+            function typeCharacter() {
+                if (index < text.length) {
+                    typingText.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(typeCharacter, 50); // Adjust typing speed here
+                }
+            }
+
+            typeCharacter();
+        }
+    </script>
+</body>
+</html>
