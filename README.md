@@ -1,0 +1,1 @@
+This is a chat based stock agent where I have used LLama model provided by meta to understand and generate the answers according to query. In this project the major portion I have tried to understand OOP concepts, flask as a backend framework and also the working of Ai models. 
